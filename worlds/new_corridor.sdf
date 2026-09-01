@@ -1,0 +1,502 @@
+<?xml version="1.0" ?>
+<!-- Two air corridors, side by side, each 16 flush 5 x 5 x 5 m cubes along +X.
+     Each corridor: 5 m wide x 5 m tall x 80 m long.
+     Blue corridor is centered at y = 0; red corridor is beside it at y = 10
+     (a 5 m gap between them).
+     Blue: alternating sky-blue / ocean-blue.
+     Red:  alternating light-red / dark-red.
+     Target: Gazebo Sim (gz-sim / Ignition). Each visual carries its own
+     ambient + diffuse + specular so the colors persist (no gray fallback). -->
+<sdf version="1.9">
+
+  <!-- Single root model containing both corridors (blue links + red links).
+       Kept as one <model> because the file is loaded as a model, and an SDF
+       model file may only have one top-level model. -->
+  <model name="air_corridors">
+    <static>true</static>
+
+    <!-- ============================ BLUE CORRIDOR (y = 0) ============================ -->
+    <link name="blue_cube_00">
+      <pose>2.5 0 2.5 0 0 0</pose>
+      <visual name="blue_cube_00_visual">
+        <geometry><box><size>5 5 5</size></box></geometry>
+        <material>
+          <ambient>0.30 0.48 0.58 1</ambient>
+          <diffuse>0.53 0.81 0.98 1</diffuse>
+          <specular>0.20 0.20 0.20 1</specular>
+        </material>
+      </visual>
+      <collision name="blue_cube_00_collision">
+        <geometry><box><size>5 5 5</size></box></geometry>
+      </collision>
+    </link>
+
+    <link name="blue_cube_01">
+      <pose>7.5 0 2.5 0 0 0</pose>
+      <visual name="blue_cube_01_visual">
+        <geometry><box><size>5 5 5</size></box></geometry>
+        <material>
+          <ambient>0.02 0.18 0.30 1</ambient>
+          <diffuse>0.05 0.40 0.66 1</diffuse>
+          <specular>0.20 0.20 0.20 1</specular>
+        </material>
+      </visual>
+      <collision name="blue_cube_01_collision">
+        <geometry><box><size>5 5 5</size></box></geometry>
+      </collision>
+    </link>
+
+    <link name="blue_cube_02">
+      <pose>12.5 0 2.5 0 0 0</pose>
+      <visual name="blue_cube_02_visual">
+        <geometry><box><size>5 5 5</size></box></geometry>
+        <material>
+          <ambient>0.30 0.48 0.58 1</ambient>
+          <diffuse>0.53 0.81 0.98 1</diffuse>
+          <specular>0.20 0.20 0.20 1</specular>
+        </material>
+      </visual>
+      <collision name="blue_cube_02_collision">
+        <geometry><box><size>5 5 5</size></box></geometry>
+      </collision>
+    </link>
+
+    <link name="blue_cube_03">
+      <pose>17.5 0 2.5 0 0 0</pose>
+      <visual name="blue_cube_03_visual">
+        <geometry><box><size>5 5 5</size></box></geometry>
+        <material>
+          <ambient>0.02 0.18 0.30 1</ambient>
+          <diffuse>0.05 0.40 0.66 1</diffuse>
+          <specular>0.20 0.20 0.20 1</specular>
+        </material>
+      </visual>
+      <collision name="blue_cube_03_collision">
+        <geometry><box><size>5 5 5</size></box></geometry>
+      </collision>
+    </link>
+
+    <link name="blue_cube_04">
+      <pose>22.5 0 2.5 0 0 0</pose>
+      <visual name="blue_cube_04_visual">
+        <geometry><box><size>5 5 5</size></box></geometry>
+        <material>
+          <ambient>0.30 0.48 0.58 1</ambient>
+          <diffuse>0.53 0.81 0.98 1</diffuse>
+          <specular>0.20 0.20 0.20 1</specular>
+        </material>
+      </visual>
+      <collision name="blue_cube_04_collision">
+        <geometry><box><size>5 5 5</size></box></geometry>
+      </collision>
+    </link>
+
+    <link name="blue_cube_05">
+      <pose>27.5 0 2.5 0 0 0</pose>
+      <visual name="blue_cube_05_visual">
+        <geometry><box><size>5 5 5</size></box></geometry>
+        <material>
+          <ambient>0.02 0.18 0.30 1</ambient>
+          <diffuse>0.05 0.40 0.66 1</diffuse>
+          <specular>0.20 0.20 0.20 1</specular>
+        </material>
+      </visual>
+      <collision name="blue_cube_05_collision">
+        <geometry><box><size>5 5 5</size></box></geometry>
+      </collision>
+    </link>
+
+    <link name="blue_cube_06">
+      <pose>32.5 0 2.5 0 0 0</pose>
+      <visual name="blue_cube_06_visual">
+        <geometry><box><size>5 5 5</size></box></geometry>
+        <material>
+          <ambient>0.30 0.48 0.58 1</ambient>
+          <diffuse>0.53 0.81 0.98 1</diffuse>
+          <specular>0.20 0.20 0.20 1</specular>
+        </material>
+      </visual>
+      <collision name="blue_cube_06_collision">
+        <geometry><box><size>5 5 5</size></box></geometry>
+      </collision>
+    </link>
+
+    <link name="blue_cube_07">
+      <pose>37.5 0 2.5 0 0 0</pose>
+      <visual name="blue_cube_07_visual">
+        <geometry><box><size>5 5 5</size></box></geometry>
+        <material>
+          <ambient>0.02 0.18 0.30 1</ambient>
+          <diffuse>0.05 0.40 0.66 1</diffuse>
+          <specular>0.20 0.20 0.20 1</specular>
+        </material>
+      </visual>
+      <collision name="blue_cube_07_collision">
+        <geometry><box><size>5 5 5</size></box></geometry>
+      </collision>
+    </link>
+
+    <link name="blue_cube_08">
+      <pose>42.5 0 2.5 0 0 0</pose>
+      <visual name="blue_cube_08_visual">
+        <geometry><box><size>5 5 5</size></box></geometry>
+        <material>
+          <ambient>0.30 0.48 0.58 1</ambient>
+          <diffuse>0.53 0.81 0.98 1</diffuse>
+          <specular>0.20 0.20 0.20 1</specular>
+        </material>
+      </visual>
+      <collision name="blue_cube_08_collision">
+        <geometry><box><size>5 5 5</size></box></geometry>
+      </collision>
+    </link>
+
+    <link name="blue_cube_09">
+      <pose>47.5 0 2.5 0 0 0</pose>
+      <visual name="blue_cube_09_visual">
+        <geometry><box><size>5 5 5</size></box></geometry>
+        <material>
+          <ambient>0.02 0.18 0.30 1</ambient>
+          <diffuse>0.05 0.40 0.66 1</diffuse>
+          <specular>0.20 0.20 0.20 1</specular>
+        </material>
+      </visual>
+      <collision name="blue_cube_09_collision">
+        <geometry><box><size>5 5 5</size></box></geometry>
+      </collision>
+    </link>
+
+    <link name="blue_cube_10">
+      <pose>52.5 0 2.5 0 0 0</pose>
+      <visual name="blue_cube_10_visual">
+        <geometry><box><size>5 5 5</size></box></geometry>
+        <material>
+          <ambient>0.30 0.48 0.58 1</ambient>
+          <diffuse>0.53 0.81 0.98 1</diffuse>
+          <specular>0.20 0.20 0.20 1</specular>
+        </material>
+      </visual>
+      <collision name="blue_cube_10_collision">
+        <geometry><box><size>5 5 5</size></box></geometry>
+      </collision>
+    </link>
+
+    <link name="blue_cube_11">
+      <pose>57.5 0 2.5 0 0 0</pose>
+      <visual name="blue_cube_11_visual">
+        <geometry><box><size>5 5 5</size></box></geometry>
+        <material>
+          <ambient>0.02 0.18 0.30 1</ambient>
+          <diffuse>0.05 0.40 0.66 1</diffuse>
+          <specular>0.20 0.20 0.20 1</specular>
+        </material>
+      </visual>
+      <collision name="blue_cube_11_collision">
+        <geometry><box><size>5 5 5</size></box></geometry>
+      </collision>
+    </link>
+
+    <link name="blue_cube_12">
+      <pose>62.5 0 2.5 0 0 0</pose>
+      <visual name="blue_cube_12_visual">
+        <geometry><box><size>5 5 5</size></box></geometry>
+        <material>
+          <ambient>0.30 0.48 0.58 1</ambient>
+          <diffuse>0.53 0.81 0.98 1</diffuse>
+          <specular>0.20 0.20 0.20 1</specular>
+        </material>
+      </visual>
+      <collision name="blue_cube_12_collision">
+        <geometry><box><size>5 5 5</size></box></geometry>
+      </collision>
+    </link>
+
+    <link name="blue_cube_13">
+      <pose>67.5 0 2.5 0 0 0</pose>
+      <visual name="blue_cube_13_visual">
+        <geometry><box><size>5 5 5</size></box></geometry>
+        <material>
+          <ambient>0.02 0.18 0.30 1</ambient>
+          <diffuse>0.05 0.40 0.66 1</diffuse>
+          <specular>0.20 0.20 0.20 1</specular>
+        </material>
+      </visual>
+      <collision name="blue_cube_13_collision">
+        <geometry><box><size>5 5 5</size></box></geometry>
+      </collision>
+    </link>
+
+    <link name="blue_cube_14">
+      <pose>72.5 0 2.5 0 0 0</pose>
+      <visual name="blue_cube_14_visual">
+        <geometry><box><size>5 5 5</size></box></geometry>
+        <material>
+          <ambient>0.30 0.48 0.58 1</ambient>
+          <diffuse>0.53 0.81 0.98 1</diffuse>
+          <specular>0.20 0.20 0.20 1</specular>
+        </material>
+      </visual>
+      <collision name="blue_cube_14_collision">
+        <geometry><box><size>5 5 5</size></box></geometry>
+      </collision>
+    </link>
+
+    <link name="blue_cube_15">
+      <pose>77.5 0 2.5 0 0 0</pose>
+      <visual name="blue_cube_15_visual">
+        <geometry><box><size>5 5 5</size></box></geometry>
+        <material>
+          <ambient>0.02 0.18 0.30 1</ambient>
+          <diffuse>0.05 0.40 0.66 1</diffuse>
+          <specular>0.20 0.20 0.20 1</specular>
+        </material>
+      </visual>
+      <collision name="blue_cube_15_collision">
+        <geometry><box><size>5 5 5</size></box></geometry>
+      </collision>
+    </link>
+
+    <!-- ============================ RED CORRIDOR (y = 10) ============================ -->
+    <link name="red_cube_00">
+      <pose>2.5 10 2.5 0 0 0</pose>
+      <visual name="red_cube_00_visual">
+        <geometry><box><size>5 5 5</size></box></geometry>
+        <material>
+          <ambient>0.58 0.30 0.30 1</ambient>
+          <diffuse>0.98 0.50 0.50 1</diffuse>
+          <specular>0.20 0.20 0.20 1</specular>
+        </material>
+      </visual>
+      <collision name="red_cube_00_collision">
+        <geometry><box><size>5 5 5</size></box></geometry>
+      </collision>
+    </link>
+
+    <link name="red_cube_01">
+      <pose>7.5 10 2.5 0 0 0</pose>
+      <visual name="red_cube_01_visual">
+        <geometry><box><size>5 5 5</size></box></geometry>
+        <material>
+          <ambient>0.35 0.05 0.06 1</ambient>
+          <diffuse>0.75 0.10 0.12 1</diffuse>
+          <specular>0.20 0.20 0.20 1</specular>
+        </material>
+      </visual>
+      <collision name="red_cube_01_collision">
+        <geometry><box><size>5 5 5</size></box></geometry>
+      </collision>
+    </link>
+
+    <link name="red_cube_02">
+      <pose>12.5 10 2.5 0 0 0</pose>
+      <visual name="red_cube_02_visual">
+        <geometry><box><size>5 5 5</size></box></geometry>
+        <material>
+          <ambient>0.58 0.30 0.30 1</ambient>
+          <diffuse>0.98 0.50 0.50 1</diffuse>
+          <specular>0.20 0.20 0.20 1</specular>
+        </material>
+      </visual>
+      <collision name="red_cube_02_collision">
+        <geometry><box><size>5 5 5</size></box></geometry>
+      </collision>
+    </link>
+
+    <link name="red_cube_03">
+      <pose>17.5 10 2.5 0 0 0</pose>
+      <visual name="red_cube_03_visual">
+        <geometry><box><size>5 5 5</size></box></geometry>
+        <material>
+          <ambient>0.35 0.05 0.06 1</ambient>
+          <diffuse>0.75 0.10 0.12 1</diffuse>
+          <specular>0.20 0.20 0.20 1</specular>
+        </material>
+      </visual>
+      <collision name="red_cube_03_collision">
+        <geometry><box><size>5 5 5</size></box></geometry>
+      </collision>
+    </link>
+
+    <link name="red_cube_04">
+      <pose>22.5 10 2.5 0 0 0</pose>
+      <visual name="red_cube_04_visual">
+        <geometry><box><size>5 5 5</size></box></geometry>
+        <material>
+          <ambient>0.58 0.30 0.30 1</ambient>
+          <diffuse>0.98 0.50 0.50 1</diffuse>
+          <specular>0.20 0.20 0.20 1</specular>
+        </material>
+      </visual>
+      <collision name="red_cube_04_collision">
+        <geometry><box><size>5 5 5</size></box></geometry>
+      </collision>
+    </link>
+
+    <link name="red_cube_05">
+      <pose>27.5 10 2.5 0 0 0</pose>
+      <visual name="red_cube_05_visual">
+        <geometry><box><size>5 5 5</size></box></geometry>
+        <material>
+          <ambient>0.35 0.05 0.06 1</ambient>
+          <diffuse>0.75 0.10 0.12 1</diffuse>
+          <specular>0.20 0.20 0.20 1</specular>
+        </material>
+      </visual>
+      <collision name="red_cube_05_collision">
+        <geometry><box><size>5 5 5</size></box></geometry>
+      </collision>
+    </link>
+
+    <link name="red_cube_06">
+      <pose>32.5 10 2.5 0 0 0</pose>
+      <visual name="red_cube_06_visual">
+        <geometry><box><size>5 5 5</size></box></geometry>
+        <material>
+          <ambient>0.58 0.30 0.30 1</ambient>
+          <diffuse>0.98 0.50 0.50 1</diffuse>
+          <specular>0.20 0.20 0.20 1</specular>
+        </material>
+      </visual>
+      <collision name="red_cube_06_collision">
+        <geometry><box><size>5 5 5</size></box></geometry>
+      </collision>
+    </link>
+
+    <link name="red_cube_07">
+      <pose>37.5 10 2.5 0 0 0</pose>
+      <visual name="red_cube_07_visual">
+        <geometry><box><size>5 5 5</size></box></geometry>
+        <material>
+          <ambient>0.35 0.05 0.06 1</ambient>
+          <diffuse>0.75 0.10 0.12 1</diffuse>
+          <specular>0.20 0.20 0.20 1</specular>
+        </material>
+      </visual>
+      <collision name="red_cube_07_collision">
+        <geometry><box><size>5 5 5</size></box></geometry>
+      </collision>
+    </link>
+
+    <link name="red_cube_08">
+      <pose>42.5 10 2.5 0 0 0</pose>
+      <visual name="red_cube_08_visual">
+        <geometry><box><size>5 5 5</size></box></geometry>
+        <material>
+          <ambient>0.58 0.30 0.30 1</ambient>
+          <diffuse>0.98 0.50 0.50 1</diffuse>
+          <specular>0.20 0.20 0.20 1</specular>
+        </material>
+      </visual>
+      <collision name="red_cube_08_collision">
+        <geometry><box><size>5 5 5</size></box></geometry>
+      </collision>
+    </link>
+
+    <link name="red_cube_09">
+      <pose>47.5 10 2.5 0 0 0</pose>
+      <visual name="red_cube_09_visual">
+        <geometry><box><size>5 5 5</size></box></geometry>
+        <material>
+          <ambient>0.35 0.05 0.06 1</ambient>
+          <diffuse>0.75 0.10 0.12 1</diffuse>
+          <specular>0.20 0.20 0.20 1</specular>
+        </material>
+      </visual>
+      <collision name="red_cube_09_collision">
+        <geometry><box><size>5 5 5</size></box></geometry>
+      </collision>
+    </link>
+
+    <link name="red_cube_10">
+      <pose>52.5 10 2.5 0 0 0</pose>
+      <visual name="red_cube_10_visual">
+        <geometry><box><size>5 5 5</size></box></geometry>
+        <material>
+          <ambient>0.58 0.30 0.30 1</ambient>
+          <diffuse>0.98 0.50 0.50 1</diffuse>
+          <specular>0.20 0.20 0.20 1</specular>
+        </material>
+      </visual>
+      <collision name="red_cube_10_collision">
+        <geometry><box><size>5 5 5</size></box></geometry>
+      </collision>
+    </link>
+
+    <link name="red_cube_11">
+      <pose>57.5 10 2.5 0 0 0</pose>
+      <visual name="red_cube_11_visual">
+        <geometry><box><size>5 5 5</size></box></geometry>
+        <material>
+          <ambient>0.35 0.05 0.06 1</ambient>
+          <diffuse>0.75 0.10 0.12 1</diffuse>
+          <specular>0.20 0.20 0.20 1</specular>
+        </material>
+      </visual>
+      <collision name="red_cube_11_collision">
+        <geometry><box><size>5 5 5</size></box></geometry>
+      </collision>
+    </link>
+
+    <link name="red_cube_12">
+      <pose>62.5 10 2.5 0 0 0</pose>
+      <visual name="red_cube_12_visual">
+        <geometry><box><size>5 5 5</size></box></geometry>
+        <material>
+          <ambient>0.58 0.30 0.30 1</ambient>
+          <diffuse>0.98 0.50 0.50 1</diffuse>
+          <specular>0.20 0.20 0.20 1</specular>
+        </material>
+      </visual>
+      <collision name="red_cube_12_collision">
+        <geometry><box><size>5 5 5</size></box></geometry>
+      </collision>
+    </link>
+
+    <link name="red_cube_13">
+      <pose>67.5 10 2.5 0 0 0</pose>
+      <visual name="red_cube_13_visual">
+        <geometry><box><size>5 5 5</size></box></geometry>
+        <material>
+          <ambient>0.35 0.05 0.06 1</ambient>
+          <diffuse>0.75 0.10 0.12 1</diffuse>
+          <specular>0.20 0.20 0.20 1</specular>
+        </material>
+      </visual>
+      <collision name="red_cube_13_collision">
+        <geometry><box><size>5 5 5</size></box></geometry>
+      </collision>
+    </link>
+
+    <link name="red_cube_14">
+      <pose>72.5 10 2.5 0 0 0</pose>
+      <visual name="red_cube_14_visual">
+        <geometry><box><size>5 5 5</size></box></geometry>
+        <material>
+          <ambient>0.58 0.30 0.30 1</ambient>
+          <diffuse>0.98 0.50 0.50 1</diffuse>
+          <specular>0.20 0.20 0.20 1</specular>
+        </material>
+      </visual>
+      <collision name="red_cube_14_collision">
+        <geometry><box><size>5 5 5</size></box></geometry>
+      </collision>
+    </link>
+
+    <link name="red_cube_15">
+      <pose>77.5 10 2.5 0 0 0</pose>
+      <visual name="red_cube_15_visual">
+        <geometry><box><size>5 5 5</size></box></geometry>
+        <material>
+          <ambient>0.35 0.05 0.06 1</ambient>
+          <diffuse>0.75 0.10 0.12 1</diffuse>
+          <specular>0.20 0.20 0.20 1</specular>
+        </material>
+      </visual>
+      <collision name="red_cube_15_collision">
+        <geometry><box><size>5 5 5</size></box></geometry>
+      </collision>
+    </link>
+
+  </model>
+
+</sdf>
