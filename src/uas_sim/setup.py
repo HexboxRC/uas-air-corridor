@@ -29,6 +29,7 @@ setup(
             'offboard_nav = uas_sim.offboard_nav:main',
             'cell_manager = uas_sim.cell_manager:main',
             "footprint_bubble = uas_sim.footprint_bubble:main",
+            'corridor_nav = uas_sim.corridor_nav:main',
         ],
     },
 )
