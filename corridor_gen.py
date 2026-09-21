@@ -2,7 +2,7 @@
 """Generate the Denton -> Dallas air corridor: Gazebo world + route JSON.
 
 ONE source of truth: the same route.json feeds both the cells placed in the
-world and the waypoints the drones fly, so drones are always inside the cells.
+world and the waypoints the drones fly, so waypoint centres and visible cell frames use the same coordinates.
 
 Usage:
     python3 corridor_gen.py --miles 20 --lanes 1 --altitude 120
@@ -12,6 +12,7 @@ Usage:
 import argparse
 import json
 import math
+from pathlib import Path
 
 DENTON = (33.2148, -97.1331)
 DESTS = {
@@ -91,42 +92,72 @@ def build(dest_key, miles, lanes, altitude):
     }
 
 
-def vertiport_sdf(name, x, y, colour):
-    """A landing pad plus a tall marker so it is findable from a distance."""
-    return f"""
-    <model name='{name}'>
+def box_visual(name, size, pose, rgb):
+    """Visual-only box; corridor guides must never be physical obstacles."""
+    return f"""<visual name='{name}'>
+      <pose>{' '.join(str(v) for v in pose)} 0 0 0</pose>
+      <geometry><box><size>{' '.join(str(v) for v in size)}</size></box></geometry>
+      <cast_shadows>false</cast_shadows>
+      <material><ambient>{rgb} 1</ambient><diffuse>{rgb} 1</diffuse>
+      <emissive>{rgb} 1</emissive></material></visual>"""
+
+
+def cell_frame(c, size, rgb):
+    length, width, height = size
+    t = 0.6
+    visuals = []
+    for side in (-1, 1):
+        for level in (-1, 1):
+            visuals.append(box_visual(f'rail_{side}_{level}',
+                (length, t, t), (0, side * width / 2, level * height / 2), rgb))
+    for end in (-1, 1):
+        for level in (-1, 1):
+            visuals.append(box_visual(f'cross_{end}_{level}',
+                (t, width, t), (end * length / 2, 0, level * height / 2), rgb))
+        for side in (-1, 1):
+            visuals.append(box_visual(f'post_{end}_{side}',
+                (t, t, height), (end * length / 2, side * width / 2, 0), rgb))
+    # Small floor dashes indicate travel direction without covering the drone.
+    for j, offset in enumerate((-60, 0, 60)):
+        visuals.append(box_visual(f'floor_dash_{j}',
+            (18, 1.2, 0.2), (offset, 0, -height / 2), '0.95 0.95 0.95'))
+    return f"""<model name='{c['id']}'>
       <static>true</static>
-      <pose>{x:.2f} {y:.2f} 0 0 0 0</pose>
+      <pose>{c['x']:.6f} {c['y']:.6f} {c['z']:.6f} 0 0 {c['gz_yaw']:.9f}</pose>
+      <link name='frame'>{''.join(visuals)}</link></model>"""
+
+
+def vertiport_sdf(name, x, y, colour):
+    # Flat visual pad on the ground; the old 2 m thick pad intersected a drone
+    # spawned at z=0.3. Ground remains the physical contact surface.
+    return f"""<model name='{name}'>
+      <static>true</static><pose>{x:.6f} {y:.6f} 0 0 0 0</pose>
       <link name='pad'>
-        <collision name='c'><geometry><cylinder>
-          <radius>30</radius><length>2</length></cylinder></geometry></collision>
-        <visual name='v'><geometry><cylinder>
-          <radius>30</radius><length>2</length></cylinder></geometry>
-          <material><ambient>0.15 0.15 0.18 1</ambient>
-                    <diffuse>0.25 0.25 0.30 1</diffuse></material></visual>
-      </link>
-      <link name='ring'>
-        <pose>0 0 1.2 0 0 0</pose>
-        <visual name='v'><geometry><cylinder>
-          <radius>18</radius><length>0.4</length></cylinder></geometry>
-          <material><ambient>{colour} 1</ambient><diffuse>{colour} 1</diffuse>
-                    <emissive>{colour} 1</emissive></material></visual>
-      </link>
-      <link name='mast'>
-        <pose>0 0 60 0 0 0</pose>
-        <visual name='v'><geometry><cylinder>
-          <radius>1.5</radius><length>120</length></cylinder></geometry>
-          <material><ambient>{colour} 1</ambient><diffuse>{colour} 1</diffuse>
-                    <emissive>{colour} 1</emissive></material></visual>
-      </link>
-    </model>"""
+      {box_visual('base', (45, 45, 0.04), (0, 0, 0.03), '0.12 0.15 0.19')}
+      {box_visual('stripe_a', (25, 2, 0.03), (0, 0, 0.07), colour)}
+      {box_visual('stripe_b', (2, 25, 0.03), (0, 0, 0.07), colour)}
+      </link></model>"""
 
 
-def write_world(d, path):
+def write_world(d, path, camera='close'):
     o = d['origin']
     ux, uy = d['unit_along']
-    cam_x, cam_y = -3000 * ux, -3000 * uy      # behind the Denton end
-    cam_yaw = math.pi / 2 - d['bearing_rad']   # look down the corridor
+    first = next(c for c in d['cells'] if c['lane'] == 0 and c['index'] == 0)
+    if camera == 'overview':
+        target_x = ux * d['segment_m'] / 2
+        target_y = uy * d['segment_m'] / 2
+        target_z = d['altitude_m']
+        back = max(700.0, d['segment_m'] * 0.65)
+        cam_x, cam_y = target_x - back * ux, target_y - back * uy
+        cam_z = max(600.0, d['segment_m'] * 0.65)
+    else:
+        target_x, target_y, target_z = first['x'], first['y'], first['z'] / 2
+        cam_x = target_x - 160 * ux - 100 * uy
+        cam_y = target_y - 160 * uy + 100 * ux
+        cam_z = first['z'] + 50
+    cam_yaw = math.atan2(target_y - cam_y, target_x - cam_x)
+    cam_pitch = math.atan2(cam_z - target_z,
+                          math.hypot(target_x - cam_x, target_y - cam_y))
     out = [f"""<?xml version='1.0'?>
 <sdf version='1.9'>
   <world name='corridor'>
@@ -163,8 +194,8 @@ def write_world(d, path):
         <scene>scene</scene>
         <ambient_light>0.6 0.6 0.6</ambient_light>
         <background_color>0.6 0.75 0.95</background_color>
-        <camera_pose>{cam_x:.1f} {cam_y:.1f} 2500 0 0.42 {cam_yaw:.4f}</camera_pose>
-        <camera_clip><near>1.0</near><far>120000</far></camera_clip>
+        <camera_pose>{cam_x:.1f} {cam_y:.1f} {cam_z:.2f} 0 {cam_pitch:.6f} {cam_yaw:.6f}</camera_pose>
+        <camera_clip><near>0.05</near><far>120000</far></camera_clip>
       </plugin>
       <plugin filename='GzSceneManager' name='Scene Manager'/>
       <plugin filename='InteractiveViewControl' name='Interactive view control'/>
@@ -203,37 +234,29 @@ def write_world(d, path):
       </link>
     </model>"""]
 
-    sx, sy, sz = d['cell_size']
-    # two shades per lane so individual cell boundaries stay visible
-    palette = [(('0.10 0.45 0.95', '0.25 0.60 1.00')),
-               (('0.95 0.40 0.10', '1.00 0.55 0.25')),
-               (('0.15 0.70 0.30', '0.30 0.85 0.45'))]
+    palette = [('0.08 0.75 0.95', '0.25 0.55 1.0'),
+               ('1.0 0.55 0.12', '1.0 0.72 0.30'),
+               ('0.20 0.90 0.50', '0.40 0.75 0.35')]
     for c in d['cells']:
-        a, b = palette[c['lane'] % len(palette)]
-        rgb = a if c['index'] % 2 == 0 else b
-        out.append(f"""
-    <model name='{c['id']}'>
-      <static>true</static>
-      <pose>{c['x']:.2f} {c['y']:.2f} {c['z']:.2f} 0 0 {c['gz_yaw']:.6f}</pose>
-      <link name='cell'>
-        <visual name='vol'>
-          <geometry><box><size>{sx} {sy} {sz}</size></box></geometry>
-          <transparency>0.55</transparency>
-          <material>
-            <ambient>{rgb} 1</ambient>
-            <diffuse>{rgb} 1</diffuse>
-            <emissive>{rgb} 1</emissive>
-          </material>
-        </visual>
-      </link>
-    </model>""")
+        rgb = palette[c['lane'] % len(palette)][c['index'] % 2]
+        out.append(cell_frame(c, d['cell_size'], rgb))
+        # Ground projection provides scale when looking down from the corridor.
+        length, width, _ = d['cell_size']
+        out.append(f"""<model name='ground_{c['id']}'>
+          <static>true</static>
+          <pose>{c['x']:.6f} {c['y']:.6f} 0 0 0 {c['gz_yaw']:.9f}</pose>
+          <link name='guides'>
+          {box_visual('left', (length, 0.8, 0.03), (0, width/2, 0.035), rgb)}
+          {box_visual('right', (length, 0.8, 0.03), (0, -width/2, 0.035), rgb)}
+          </link></model>""")
 
     # distance markers every 2 km, for scale
     ux2, uy2 = d['unit_along']
     step = 2000.0
     n_marks = int(d['segment_m'] // step)
     for k in range(1, n_marks + 1):
-        mx, my = k * step * ux2, k * step * uy2
+        mx = k * step * ux2 - 90 * uy2
+        my = k * step * uy2 + 90 * ux2
         out.append(f"""
     <model name='km_{k*2:03d}'>
       <static>true</static>
@@ -252,7 +275,8 @@ def write_world(d, path):
         out.append(vertiport_sdf(tag, cell['x'], cell['y'], col))
 
     out.append("\n  </world>\n</sdf>\n")
-    with open(path, 'w') as f:
+    Path(path).expanduser().parent.mkdir(parents=True, exist_ok=True)
+    with open(Path(path).expanduser(), 'w') as f:
         f.write(''.join(out))
 
 
@@ -265,19 +289,30 @@ def main():
     p.add_argument('--altitude', type=float, default=120.0)
     p.add_argument('--world', default='corridor.sdf')
     p.add_argument('--route', default='route.json')
+    p.add_argument('--from-route', help='Use an existing route without changing its geometry')
+    p.add_argument('--camera', choices=['close', 'overview'], default='close')
     a = p.parse_args()
 
-    d = build(a.dest, a.miles if a.miles > 0 else None, a.lanes, a.altitude)
-    write_world(d, a.world)
-    with open(a.route, 'w') as f:
-        json.dump(d, f, indent=2)
+    if a.from_route:
+        with open(Path(a.from_route).expanduser()) as f:
+            d = json.load(f)
+    else:
+        if a.lanes < 1 or a.altitude <= CELL_H / 2 or a.miles < 0:
+            p.error('Use lanes >= 1, altitude > 25 m, and miles >= 0.')
+        d = build(a.dest, a.miles if a.miles > 0 else None, a.lanes, a.altitude)
+    write_world(d, a.world, camera=a.camera)
+    # Preserve an existing route byte-for-byte when input and output coincide.
+    route_path = Path(a.route).expanduser()
+    same = a.from_route and Path(a.from_route).expanduser().resolve() == route_path.resolve()
+    if not same:
+        route_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(route_path, 'w') as f:
+            json.dump(d, f, indent=2)
+    print(f"{d['segment_mi']:.1f} mi, {d['lanes']} lanes, "
+          f"{d['cells_per_lane']} cells/lane, altitude {d['altitude_m']} m")
+    print(f'Wrote open corridor frames to {a.world}; camera={a.camera}')
+    print(f'Route: {a.route}')
 
-    print(f"Denton -> {a.dest}: {d['route_total_mi']:.1f} mi total, "
-          f"bearing {d['bearing_deg']:.1f} deg")
-    print(f"Built {d['segment_mi']:.1f} mi corridor: "
-          f"{d['cells_per_lane']} cells x {a.lanes} lane(s) "
-          f"= {len(d['cells'])} models, altitude {a.altitude} m")
-    print(f"Wrote {a.world} and {a.route}")
 
 
 if __name__ == '__main__':

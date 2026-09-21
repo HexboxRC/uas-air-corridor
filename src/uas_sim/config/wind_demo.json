@@ -1,0 +1,34 @@
+{
+  "study_indices": [7, 8, 9],
+  "lane": 0,
+  "drones": 2,
+  "spawn_stagger": 4,
+  "initial_width_m": 20.0,
+  "available_width_m": 50.0,
+  "physics": {
+    "air_density_kg_m3": 1.225,
+    "drag_area_m2": 0.08,
+    "force_cap_n": 5.0,
+    "wind_response_s": 0.5,
+    "edge_blend_m": 10.0,
+    "wind_command_timeout_s": 3.0
+  },
+  "controller": {
+    "policy": "adaptive",
+    "model": "demo",
+    "demo_error_base_m": 0.75,
+    "demo_error_coefficient": 0.35,
+    "max_calibrated_crosswind_m_s": 8.0,
+    "min_width_m": 20.0,
+    "max_width_m": 50.0,
+    "vehicle_radius_m": 0.5,
+    "extra_margin_m": 1.0,
+    "wind_memory_s": 2.0,
+    "expand_rate_m_s": 4.0,
+    "contract_rate_m_s": 0.5,
+    "contraction_hold_s": 10.0,
+    "hysteresis_m": 1.0,
+    "observation_timeout_s": 1.0
+  },
+  "notes": "DEMONSTRATION coefficients, not a calibrated aircraft safety model. Widths are full widths. Admission output is advisory; existing corridor_nav is unchanged."
+}

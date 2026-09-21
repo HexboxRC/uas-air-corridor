@@ -6,3 +6,6 @@ src/ros_gz/
 __pycache__/
 *.pyc
 .vscode/
+
+# Generated wind experiment worlds, logs and smoke-test evidence
+/wind_runs/
